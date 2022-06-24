@@ -56,8 +56,10 @@ def on_postback(event):
     postback_msg = event.postback.data
 
     if postback_msg == "cats":
-
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text="postback success"))
+        ########################
+        # ここに画像を送信するプログラムを書く
+        ########################
+        make_quickreply_cats(event.reply_token, text="(=^・・^=)")
         
 
 # 友達追加メッセージ
