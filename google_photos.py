@@ -3,6 +3,7 @@ import google_auth_oauthlib.flow
 import json,os
 from datetime import datetime,date
 from googleapiclient.discovery import build
+import random
 
 SCOPES = ['https://www.googleapis.com/auth/photoslibrary']
 API_SERVICE_NAME = 'photoslibrary'
@@ -35,13 +36,47 @@ def getCredentials():
     
   return credentials
 
+# アルバム名とキーワードが一致するアルバムを取得
+def getTargetAlbum(service, word):
+    # 共有アルバムを一括収集
+    sharedAlbums = service.sharedAlbums().list(pageSize=20).execute()
+    for sharedAlbum in sharedAlbums['sharedAlbums']:
+        if word in sharedAlbum['title']:
+            return sharedAlbum
+
+# 取得したアルバム内の画像を取り出す
+def getTargetPhotos(service, word, GET_NUM_OF_PHOTOS):
+    photos = []
+
+    Album = getTargetAlbum(service, word)
+    AlbumId = Album['id'] 
+    photo = {}
+    body = {
+        'albumId' : AlbumId,
+        'pageSize' : 50,
+    }
+    mediaItems = service.mediaItems().search(body=body).execute()
+    for mediaItem in mediaItems['mediaItems']:
+        photo['id'],photo['url'] = mediaItem['id'],mediaItem['baseUrl']
+        photos.append(photo)
+    random.sample(photos, GET_NUM_OF_PHOTOS))
+
+
+def getPhotos(service):
+    # 取得する画像の枚数
+    GET_NUM_OF_PHOTOS = 4
+    # catアルバム
+    getTargetPhotos(service, 'cat', GET_NUM_OF_PHOTOS)
+
 def main():
     credentials = getCredentials()
     service = build(
         API_SERVICE_NAME,
         API_VERSION,
-        credentials=credentials
+        credentials=credentials,
+        static_discovery=False
     )
+    getPhotos(service)
 
 if __name__ == "__main__":
     main()
