@@ -65,7 +65,7 @@ def follow(event):
     #if event.type == "follow":
     make_quickreply_cats(
         event.reply_token,
-        TextSendMessage(text="(=^・・^=)"))
+        text="(=^・・^=)")
 
 # クイックリプライ, 鳴き声が書かれたテキストのボタン生成
 def make_quickreply_cats(token, text):
