@@ -61,10 +61,10 @@ def on_postback(event):
 # 友達追加メッセージ
 @handler.add(FollowEvent)
 def follow(event):
-    if event.type == "follow":
-        make_quickreply_cats(
-            event.reply_token,
-            TextSendMessage(text="(=^・・^=)"))
+    #if event.type == "follow":
+    make_quickreply_cats(
+        event.reply_token,
+        TextSendMessage(text="(=^・・^=)"))
 
 # クイックリプライ, 鳴き声が書かれたテキストのボタン生成
 def make_quickreply_cats(event, text):
