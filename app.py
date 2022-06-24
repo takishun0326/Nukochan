@@ -9,7 +9,7 @@ from linebot.exceptions import (
 )
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
-    PostbackEvent,FollowEvent
+    PostbackEvent,FollowEvent,
     QuickReply, QuickReplyButton
 )
 
