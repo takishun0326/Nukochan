@@ -57,7 +57,7 @@ def on_postback(event):
 
     if postback_msg == "cats":
 
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(messages="postback success"))
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text="postback success"))
         
 
 # 友達追加メッセージ
