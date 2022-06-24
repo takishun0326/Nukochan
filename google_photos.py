@@ -58,17 +58,22 @@ def getTargetPhotos(service, word, GET_NUM_OF_PHOTOS):
     mediaItems = service.mediaItems().search(body=body).execute()
     for mediaItem in mediaItems['mediaItems']:
         photo['id'],photo['url'] = mediaItem['id'],mediaItem['baseUrl']
+        photo['width'],photo['height'] = mediaItem['mediaMetadata']['width'],mediaItem['mediaMetadata']['height']
         photos.append(photo)
-    random.sample(photos, GET_NUM_OF_PHOTOS))
+    
+    # ランダムに GET_NUM_OF_PHOTOSの数だけ取得 list
+    random.seed()
+    return random.sample(photos, GET_NUM_OF_PHOTOS)
 
+def urlFormat(url, width, height):
+    return url + '=w' + str(width) + '-h' + str(height)
 
-def getPhotos(service):
+def getPhotos():
     # 取得する画像の枚数
-    GET_NUM_OF_PHOTOS = 4
-    # catアルバム
-    getTargetPhotos(service, 'cat', GET_NUM_OF_PHOTOS)
+    GET_NUM_OF_PHOTOS = 1
+    
+    photos_urls = []
 
-def main():
     credentials = getCredentials()
     service = build(
         API_SERVICE_NAME,
@@ -76,7 +81,19 @@ def main():
         credentials=credentials,
         static_discovery=False
     )
-    getPhotos(service)
+    # catアルバム
+    cat_photos = getTargetPhotos(service, 'cat', GET_NUM_OF_PHOTOS) 
 
-if __name__ == "__main__":
-    main()
+    # urlの結合
+    for cat_photo in cat_photos:
+        width = cat_photo['width']
+        height = cat_photo['height']
+        url = urlFormat(cat_photo['url'], width, height)
+        # print(url)
+        photos_urls.append(url)
+    
+    # 画像のurlのみ返す
+    return photos_urls
+
+if __name__ == '__main__':
+    getPhotos()
