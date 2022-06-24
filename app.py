@@ -68,7 +68,7 @@ def follow(event):
         TextSendMessage(text="(=^・・^=)"))
 
 # クイックリプライ, 鳴き声が書かれたテキストのボタン生成
-def make_quickreply_cats(event, text):
+def make_quickreply_cats(token, text):
     items = []
     items.append(QuickReplyButton(action=PostbackAction(label='にゃーん', data='cats')))
     messages = TextSendMessage(text=text,
