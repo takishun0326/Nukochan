@@ -9,7 +9,11 @@ from linebot.exceptions import (
 )
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
+    PostbackEvent,FollowEvent
+    QuickReply, QuickReplyButton
 )
+
+from linebot.models.actions import PostbackAction
 
 # 変数appにFlaskを代入。インスタンス化
 app = Flask(__name__)
@@ -46,10 +50,35 @@ def callback():
     # handleの処理を終えればOK
     return 'OK'
 
+# postback messageが返された時のアクション
+@handler.add(PostbackEvent)
+def on_postback(event):
+    postback_msg = event.postback.data
+
+    if postback_msg == "cats":
+        
+
+# 友達追加メッセージ
+@handler.add(FollowEvent)
+def follow(event):
+    if event.type == "follow":
+        make_quickreply_cats(
+            event.reply_token,
+            TextSendMessage(text="(=^・・^=)"))
+
+# クイックリプライ, 鳴き声が書かれたテキストのボタン生成
+def make_quickreply_cats(event, text):
+    items = []
+    items.append(QuickReplyButton(action=PostbackAction(label='にゃーん', data='cats')))
+    messages = TextSendMessage(text=text,
+                            quick_reply=QuickReply(items=items))
+    line_bot_api.reply_message(token, messages=messages)
+
 # LINEでMessageEvent（普通のメッセージを送信された場合）が起こった場合に、
 # def以下の関数を実行します。
 # reply_messageの第一引数のevent.reply_tokenは、イベントの応答に用いるトークンです。 
 # 第二引数には、linebot.modelsに定義されている返信用のTextSendMessageオブジェクトを渡しています。
+
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     line_bot_api.reply_message(
