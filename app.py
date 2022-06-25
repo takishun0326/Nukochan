@@ -10,10 +10,13 @@ from linebot.exceptions import (
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
     PostbackEvent,FollowEvent,
-    QuickReply, QuickReplyButton
+    QuickReply, QuickReplyButton,
+    ImageSendMessage
 )
 
 from linebot.models.actions import PostbackAction
+
+import google_photos
 
 # 変数appにFlaskを代入。インスタンス化
 app = Flask(__name__)
@@ -50,16 +53,25 @@ def callback():
     # handleの処理を終えればOK
     return 'OK'
 
+def makeImageMessage():
+    # 画像のURLを回収
+    photos_urls = google_photos.getPhotos()
+    message = ImageSendMessage(
+        original_content_url=photos_urls,
+        preview_image_url=photos_urls
+    )
+
+    return message
+
 # postback messageが返された時のアクション
 @handler.add(PostbackEvent)
 def on_postback(event):
     postback_msg = event.postback.data
 
     if postback_msg == "cats":
-        ########################
-        # ここに画像を送信するプログラムを書く
-        ########################
         make_quickreply_cats(event.reply_token, text="(=^・・^=)")
+        message = makeImageMessage()
+        line_bot_api.reply_message(event.reply_token, messages)
         
 
 # 友達追加メッセージ
@@ -85,9 +97,12 @@ def make_quickreply_cats(token, text):
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=event.message.text))
+    # line_bot_api.reply_message(
+    #     event.reply_token,
+    #     TextSendMessage(text=event.message.text))
+    make_quickreply_cats(event.reply_token, text="(=^・・^=)")
+        message = makeImageMessage()
+        line_bot_api.reply_message(event.reply_token, messages)
 
 # ポート番号の設定
 if __name__ == "__main__":
