@@ -87,7 +87,7 @@ def make_quickreply_cats(token, text):
     items = []
     items.append(QuickReplyButton(action=PostbackAction(label='にゃーん', data='cats')))
     messages = TextSendMessage(text=text,
-                            quick_reply=QuickReply(items=items))
+        quick_reply=QuickReply(items=items))
     line_bot_api.reply_message(token, messages=messages)
 
 # LINEでMessageEvent（普通のメッセージを送信された場合）が起こった場合に、
@@ -97,12 +97,12 @@ def make_quickreply_cats(token, text):
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    make_quickreply_cats(event.reply_token, text="(=^・・^=)")
+    message = makeImageMessage()
+    line_bot_api.reply_message(event.reply_token, messages)
     # line_bot_api.reply_message(
     #     event.reply_token,
     #     TextSendMessage(text=event.message.text))
-    make_quickreply_cats(event.reply_token, text="(=^・・^=)")
-        message = makeImageMessage()
-        line_bot_api.reply_message(event.reply_token, messages)
 
 # ポート番号の設定
 if __name__ == "__main__":
